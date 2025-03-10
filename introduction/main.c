@@ -10,7 +10,6 @@ int shortestLineIndex(int lines[], int n) {
             shortest = j;
         }
     }
-
     return shortest;
 }
 
