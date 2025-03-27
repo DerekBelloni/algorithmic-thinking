@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 
 #define ARMS 6
 #define SIZE 100000
@@ -49,19 +50,21 @@ int areIdentical(int snowflake1[6], int snowflake2[6]) {
     return 0;
 }
 
-void identifyIdentical(int snowflakes[][6], int n) {
-    int i, j; 
-
-    for (i = 0; i < n; i++) {
-        for (j = i + 1; j < n; j++) {
-            if (areIdentical(snowflakes[i], snowflakes[j])) {
-                printf("Two identical snowflakes found.\n");
-                return;
+void identifyIdentical(snowflake_node *snowflakes[SIZE]) {
+    int i;
+    for (i = 0; i < SIZE; i++) {
+        while (snowflakes[i]->next != NULL) {
+            int snowflake1[6];
+            int snowflake2[6]; 
+            memcpy(snowflake1, snowflakes[i]->snowflake, sizeof(int) * 6);
+            memcpy(snowflake2, snowflakes[i]->next->snowflake, sizeof(int) * 6);
+            if (areIdentical(snowflake1, snowflake2)) {
+               printf("Twin snowflakes found\n"); 
             }
+            snowflakes[i] = snowflakes[i]->next;
         }
     }
-    
-    printf("No two snowflakes are alike.\n");
+    printf("No two snowflakes are alike\n");
 }
 
 int code(int snowflake[]) {
@@ -69,7 +72,7 @@ int code(int snowflake[]) {
 }
 
 int main() {
-    static snowflake_node snowflakes[SIZE] = {NULL};
+    static snowflake_node *snowflakes[SIZE] = {NULL};
     snowflake_node *snow;
     int n, i, j, snowflake_code;
     scanf("%d", &n);
@@ -83,9 +86,10 @@ int main() {
             scanf("%d", &snow->snowflake[j]);
         }
         snowflake_code = code(snow->snowflake);
-
+        snow->next = snowflakes[snowflake_code];
+        snowflakes[snowflake_code] = snow;
     }
 
-//    identifyIdentical(snowFlakes, n);
+    identifyIdentical(snowflakes);
     return 0;
 }
